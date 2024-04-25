@@ -1,0 +1,184 @@
+package comp.model;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+
+
+@Entity
+public class Product {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "product_id")
+	private Long id;
+	
+	@Column(name = "title")
+	private String title;
+	
+	@Column(name = "discription")
+	private String discription;
+
+	
+	@Column(name = "quantity")
+	private Integer quantity;
+	
+	@Column(name = "brand")
+	private String brand;
+	
+	
+	@Embedded
+	@ElementCollection
+	@CollectionTable(name = "product_power",joinColumns = @JoinColumn(name = "product_id"))
+	private Set<Power> powers = new HashSet<>();
+	
+	@Column(name = "image_url")
+	private String imageUrl;
+	
+	@OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
+	private List<Rating> rating = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
+	private List<Review> review = new ArrayList<>();
+	
+	@Column(name = "num_rating")
+	private Integer numRating;
+	
+	@ManyToOne
+	@JoinColumn(name="category_id")
+	private Category category;
+	
+	private LocalDateTime createdAt;
+
+	public Product() {
+	}
+
+	public Product(String title, String discription, Integer price, Integer discountedPrice,
+			Integer discountedPercent, Integer quantity, String brand, String color, Set<Power> powers, String imageUrl,
+			List<Rating> rating, List<Review> review, Integer numRating, Category category, LocalDateTime createdAt) {
+		this.title = title;
+		this.discription = discription;
+		this.quantity = quantity;
+		this.brand = brand;
+		this.powers = powers;
+		this.imageUrl = imageUrl;
+		this.rating = rating;
+		this.review = review;
+		this.numRating = numRating;
+		this.category = category;
+		this.createdAt = createdAt;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getDiscription() {
+		return discription;
+	}
+
+	public void setDiscription(String discription) {
+		this.discription = discription;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public String getBrand() {
+		return brand;
+	}
+
+	public void setBrand(String brand) {
+		this.brand = brand;
+	}
+
+
+	public Set<Power> getPowers() {
+		return powers;
+	}
+
+	public void setPowers(Set<Power> powers) {
+		this.powers = powers;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	public List<Rating> getRating() {
+		return rating;
+	}
+
+	public void setRating(List<Rating> rating) {
+		this.rating = rating;
+	}
+
+	public List<Review> getReview() {
+		return review;
+	}
+
+	public void setReview(List<Review> review) {
+		this.review = review;
+	}
+
+	public Integer getNumRating() {
+		return numRating;
+	}
+
+	public void setNumRating(Integer numRating) {
+		this.numRating = numRating;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+}
