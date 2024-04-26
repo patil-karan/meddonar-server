@@ -2,15 +2,13 @@ package comp.controller;
 
 import java.util.List;
 
+import comp.repository.OrderRepository;
+import comp.request.OrderRequest;
+import comp.response.OrderResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import comp.exception.OrderException;
 import comp.exception.UserException;
@@ -29,18 +27,21 @@ import comp.service.UserService;
 		
 		@Autowired
 		private UserService userService;
+
+
 		
-		@PostMapping("/")
-		public ResponseEntity<Order> createOrder(@RequestHeader Address shippingAddress,@RequestHeader("Authorization") String jwt)throws UserException{
+		@PostMapping("/create")
+		public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest orderRequest, @RequestHeader("Authorization") String jwt)throws UserException{
 			User user = userService.findUserProfileByJwt(jwt);
 			
-			Order order = orderService.createOrder(user, shippingAddress);
-			
-			return new ResponseEntity<Order>(order,HttpStatus.CREATED);
-			
+			OrderResponse response = orderService.createOrder(user,orderRequest);
+			if(response!=null)
+				return new ResponseEntity<OrderResponse>(response,HttpStatus.CREATED);
+			else
+				return new ResponseEntity<OrderResponse>(response,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		@GetMapping("/user")
+		@GetMapping("/user/order")
 		public ResponseEntity<List<Order>> usersOrderHistory(@RequestHeader("Authorization") String jwt) throws UserException{
 			User user = userService.findUserProfileByJwt(jwt);
 			
@@ -58,4 +59,7 @@ import comp.service.UserService;
 			
 			return new ResponseEntity<Order>(order,HttpStatus.CREATED);
 		}
+
+
+
 }

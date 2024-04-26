@@ -17,13 +17,13 @@ import comp.model.Product;
 import comp.service.ProductService;
 
 @RestController
-	@RequestMapping("/api")
+	@RequestMapping("products")
 	public class ProductController {
 
 		@Autowired
 		private ProductService productService;
 		
-		@GetMapping("/products")
+		@GetMapping("/byCategory")
 		public ResponseEntity<Page<Product>> findProductByCategory(@RequestParam String category,
 				@RequestParam List<Integer> power,@RequestParam String stock,@RequestParam Integer pagenumber,@RequestParam Integer pageSize){
 			
@@ -32,12 +32,17 @@ import comp.service.ProductService;
 			return new ResponseEntity<Page<Product>>(productPage,HttpStatus.ACCEPTED);
 		}
 		
-		@GetMapping("/products/id/{productId}")
+		@GetMapping("/id/{productId}")
 		public ResponseEntity<Product> findProductById(@PathVariable Long productId)throws ProductException{
 			
 			Product product = productService.findProductById(productId);
 			
 			return new ResponseEntity<Product>(product,HttpStatus.ACCEPTED);
 		}
-		
+
+	@GetMapping("/all")
+	public ResponseEntity<List<Product>> findAllProducts(){
+		List<Product> products = productService.findAllProducts();
+		return new ResponseEntity<>(products,HttpStatus.OK);
+	}
 }

@@ -20,10 +20,10 @@ import jakarta.persistence.Table;
 		@GeneratedValue(strategy = GenerationType.AUTO)
 		private Long id;
 		
-		@JsonIgnore
-		@ManyToOne
-		@JoinColumn(name = "order_id")
-		private Order order;
+//		@JsonIgnore
+//		@ManyToOne
+//		@JoinColumn(name = "order_id")
+//		private Order order;
 		
 		@ManyToOne
 		private Product product;
@@ -41,9 +41,9 @@ import jakarta.persistence.Table;
 			// TODO Auto-generated constructor stub
 		}
 
-		public OrderItem( Order order, Product product, String size, Integer quantity, Integer price,
+		public OrderItem( Product product, String size, Integer quantity, Integer price,
 				Integer discountedPrice, Long userId, LocalDateTime diliveryDate) {
-			this.order = order;
+//			this.order = order;
 			this.product = product;
 			this.size = size;
 			this.quantity = quantity;
@@ -59,13 +59,13 @@ import jakarta.persistence.Table;
 			this.id = id;
 		}
 
-		public Order getOrder() {
-			return order;
-		}
-
-		public void setOrder(Order order) {
-			this.order = order;
-		}
+//		public Order getOrder() {
+//			return order;
+//		}
+//
+//		public void setOrder(Order order) {
+//			this.order = order;
+//		}
 
 		public Product getProduct() {
 			return product;

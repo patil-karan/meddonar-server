@@ -6,18 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 
 @Entity
@@ -40,8 +29,7 @@ public class Product {
 	
 	@Column(name = "brand")
 	private String brand;
-	
-	
+
 	@Embedded
 	@ElementCollection
 	@CollectionTable(name = "product_power",joinColumns = @JoinColumn(name = "product_id"))
@@ -65,12 +53,13 @@ public class Product {
 	
 	private LocalDateTime createdAt;
 
+	@OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
+	private List<Order> order = new ArrayList<>();
+
 	public Product() {
 	}
 
-	public Product(String title, String discription, Integer price, Integer discountedPrice,
-			Integer discountedPercent, Integer quantity, String brand, String color, Set<Power> powers, String imageUrl,
-			List<Rating> rating, List<Review> review, Integer numRating, Category category, LocalDateTime createdAt) {
+	public Product( String title, String discription, Integer quantity, String brand, Set<Power> powers, String imageUrl, List<Rating> rating, List<Review> review, Integer numRating, Category category, LocalDateTime createdAt, List<Order> order) {
 		this.title = title;
 		this.discription = discription;
 		this.quantity = quantity;
@@ -82,6 +71,7 @@ public class Product {
 		this.numRating = numRating;
 		this.category = category;
 		this.createdAt = createdAt;
+		this.order = order;
 	}
 
 	public Long getId() {
@@ -123,7 +113,6 @@ public class Product {
 	public void setBrand(String brand) {
 		this.brand = brand;
 	}
-
 
 	public Set<Power> getPowers() {
 		return powers;
@@ -181,4 +170,11 @@ public class Product {
 		this.createdAt = createdAt;
 	}
 
+	public List<Order> getOrder() {
+		return order;
+	}
+
+	public void setOrder(List<Order> order) {
+		this.order = order;
+	}
 }

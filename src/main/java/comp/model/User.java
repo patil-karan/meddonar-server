@@ -64,11 +64,10 @@ public class User {
 	public User() {
 	}
 
-	public User(Long id, String firstName, String lastName, String password, String email, String role, String mobile,
+	public User(String firstName, String lastName, String password, String email, String role, String mobile,
 			List<Address> addresses, List<PaymentInformation> paymentInformations, List<Rating> ratings,
 			List<Review> reviews, LocalDateTime createdAt) {
 		super();
-		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.password = password;

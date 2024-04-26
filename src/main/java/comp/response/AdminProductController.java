@@ -2,6 +2,7 @@ package comp.response;
 
 import java.util.List;
 
+import comp.request.ProductUpdateRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,14 +51,10 @@ import comp.service.ProductService;
 			return new ResponseEntity<ApiResponse>(response,HttpStatus.OK);
 		}
 		
-		@GetMapping("/all")
-		public ResponseEntity<List<Product>> findAllProducts(){
-			List<Product> products = productService.findAllProducts();
-			return new ResponseEntity<>(products,HttpStatus.OK);
-		}
+
 		
 		@PutMapping("{productId}/product")
-		public ResponseEntity<Product> updateProduct(@PathVariable Long productId,@RequestBody Product req) throws ProductException{
+		public ResponseEntity<Product> updateProduct(@PathVariable Long productId,@RequestBody ProductUpdateRequest req) throws ProductException{
 			Product product = productService.updateProduct(productId, req);
 			return new ResponseEntity<Product>(product,HttpStatus.CREATED);
 			

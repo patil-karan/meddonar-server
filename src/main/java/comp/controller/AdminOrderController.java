@@ -2,6 +2,7 @@ package comp.controller;
 
 import java.util.List;
 
+import comp.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +25,12 @@ import comp.service.OrderService;
 		@Autowired
 		private OrderService orderService;
 
-		public AdminOrderController(OrderService orderService) {
-			super();
-			this.orderService = orderService;
-		}
+		@Autowired
+		private OrderRepository orderRepository;
+
+
 		
-		@GetMapping("/")
+		@GetMapping("/all")
 		public ResponseEntity<List<Order>> getAllOrderHandler(){
 			List<Order> orders = orderService.getAllOrders();
 			return new ResponseEntity<List<Order>>(orders,HttpStatus.ACCEPTED);
@@ -73,6 +74,11 @@ import comp.service.OrderService;
 			apiResponse.setStatus(true);
 			return new ResponseEntity<>(apiResponse,HttpStatus.OK);
 		}
-		
+
+//		@GetMapping("/all")
+//		public ResponseEntity<List<Order>> getAllOrders(){
+//			List<Order> orders = orderRepository.findAll();
+//			return new ResponseEntity<List<Order>>(orders,HttpStatus.ACCEPTED);
+//		}
 		
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import comp.request.ProductUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -73,15 +74,15 @@ import comp.request.ProductRequest;
 		}
 
 		@Override
-		public Product updateProduct(Long productId, Product product) throws ProductException {
+		public Product updateProduct(Long productId, ProductUpdateRequest product) throws ProductException {
 		    Product existingProduct = productRepository.findById(productId).orElse(null);
 		    if (existingProduct==null)
 		        throw new ProductException("Product is not available for id "+productId);
 
-		    Category category = categoryRepository.findByCategoryName(product.getCategory().getCategoryName());
+		    Category category = categoryRepository.findByCategoryName(product.getCategoryName());
 
 		    if (category==null){
-		        throw new ProductException(product.getCategory().getCategoryName()+" category is not available");
+		        throw new ProductException(product.getCategoryName()+" category is not available");
 		    }
 
 		    if (product.getQuantity()<0){
@@ -91,9 +92,9 @@ import comp.request.ProductRequest;
 		    existingProduct.setDiscription(product.getDiscription());
 		    existingProduct.setBrand(product.getBrand());
 		    existingProduct.setImageUrl(product.getImageUrl());
-		    existingProduct.setPowers(product.getPowers());
+		    existingProduct.setPowers(product.getPower());
 		    existingProduct.setQuantity(product.getQuantity());
-		    existingProduct.setCategory(product.getCategory());
+		    existingProduct.setCategory(category);
 		    return productRepository.save(existingProduct);
 		}
 

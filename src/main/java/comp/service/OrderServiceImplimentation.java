@@ -7,96 +7,65 @@ package comp.service;
 	import java.util.List;
 	import java.util.Optional;
 
+	import comp.model.*;
+	import comp.repository.*;
+	import comp.request.OrderRequest;
+	import comp.response.OrderResponse;
 	import org.springframework.beans.factory.annotation.Autowired;
 	import org.springframework.stereotype.Service;
 
 import comp.exception.OrderException;
-import comp.model.Address;
-import comp.model.CartItems;
-import comp.model.Order;
-import comp.model.OrderItem;
-import comp.model.User;
-import comp.repository.AddressRepository;
-import comp.repository.CartRepository;
-import comp.repository.OrderItemRepository;
-import comp.repository.OrderRepository;
-import comp.repository.UserRepository;
-import comp.model.Cart;
 
-	@Service
+@Service
 	public class OrderServiceImplimentation implements OrderService{
-		
-		private CartRepository cartRepository;
-		private CartItemService cartItemService;
-		private ProductService productService;
+
+	private AddressRepository addressRepository;
+	private ProductRepository productRepository;
 		private OrderRepository orderRepository;
-		private AddressRepository addressRepository;
-		private UserRepository userRepository;
-		private CartService cartService;
-		private OrderItemService orderItemService;
-		private OrderItemRepository orderItemRepository;
-		
-		
 
-		
-		public OrderServiceImplimentation(CartRepository cartRepository, CartItemService cartItemService,
-				ProductService productService, OrderRepository orderRepository, AddressRepository addressRepository,
-				UserRepository userRepository,CartService cartService,
-				OrderItemService orderItemService, OrderItemRepository orderItemRepository) {
-			this.cartRepository = cartRepository;
-			this.cartItemService = cartItemService;
-			this.productService = productService;
-			this.orderRepository = orderRepository;
-			this.addressRepository = addressRepository;
-			this.cartService =cartService;
-			this.userRepository=userRepository;
-			this.orderItemService = orderItemService;
-			this.orderItemRepository = orderItemRepository;
-		}
 
-		@Override
-		public Order createOrder(User user, Address shippingAddress) {
-			shippingAddress.setUser(user);
-			Address address = addressRepository.save(shippingAddress);
-			user.getAddresses().add(address);
-			userRepository.save(user);
-			
-			Cart cart = cartService.findUserCart(user.getId());
-			List<OrderItem> orderItems = new ArrayList<>();
-			
-			for (CartItems items: cart.getCartItems()) {
-				OrderItem orderItem = new OrderItem();
-				
-				orderItem.setProduct(items.getProduct());
-				orderItem.setQuantity(items.getQuantity());
-				orderItem.setSize(items.getPower());
-				orderItem.setUserId(items.getUserId());
-				
-				OrderItem createdOrderItem = orderItemRepository.save(orderItem);
-				orderItems.add(createdOrderItem);
-				}
-			
-			Order createdOrder = new Order();
-			createdOrder.setUser(user);
-			createdOrder.setOrderItems(orderItems);
-			createdOrder.setTotalItem(cart.getTotalItem());
-			List<Address> shippingAddresses = new ArrayList<>();
-			shippingAddresses.add(address);
-			createdOrder.setShippingAddresses(shippingAddresses);
-			createdOrder.setOrderDate(LocalDateTime.now());
-			createdOrder.setOrderStatus("PENDING");
-			createdOrder.setCreatedAt(LocalDateTime.now());
-			
-			Order saveOrder = orderRepository.save(createdOrder);
-			
-			for(OrderItem item: orderItems) {
-				item.setOrder(saveOrder);
-				orderItemRepository.save(item);
-			}
-			return saveOrder;
-		}
+	@Autowired
+	public OrderServiceImplimentation(ProductRepository productRepository, OrderRepository orderRepository, AddressRepository addressRepository) {
+		this.productRepository = productRepository;
+		this.orderRepository = orderRepository;
+		this.addressRepository = addressRepository;
+	}
 
-		@Override
+	@Override
+	public OrderResponse createOrder(User user, OrderRequest orderRequest) {
+		Product product = productRepository.getReferenceById(orderRequest.getProductId());
+
+		// Eagerly fetch the Address by ID to ensure it's fully loaded
+		Address address = addressRepository.findById(orderRequest.getAddressId()).orElseThrow(() -> new RuntimeException("Address not found"));
+
+		// Create the order with fully loaded objects
+		Order createdOrder = new Order();
+		createdOrder.setUser(user);
+		createdOrder.setProduct(product);
+		createdOrder.setShippingAddress(address);
+		createdOrder.setOrderDate(LocalDateTime.now());
+		createdOrder.setPower(orderRequest.getPower());
+		createdOrder.setQuantity(product.getQuantity()- orderRequest.getQuantity());
+		createdOrder.setOrderStatus("PENDING");
+		createdOrder.setCreatedAt(LocalDateTime.now());
+
+		orderRepository.save(createdOrder);
+
+		// Build the OrderResponse with fully initialized Address
+		OrderResponse response = new OrderResponse();
+		response.setOrderDate(createdOrder.getOrderDate());
+		response.setDeliveryDate(createdOrder.getDeliveryDate());
+		response.setProductTitle(product.getTitle());
+		response.setOrderStatus(createdOrder.getOrderStatus());
+		response.setAddress(address);
+		response.setPower(orderRequest.getPower());
+		response.setQuantity(orderRequest.getQuantity());
+
+		return response;
+	}
+
+
+	@Override
 		public Order findOrderById(Long orderId) throws OrderException {
 			Optional<Order> opt = orderRepository.findById(orderId);
 			

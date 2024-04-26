@@ -4,147 +4,143 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "customer_order") 
+@Table(name = "customer_order")
 public class Order {
-	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 
+	@Column(name = "order_id")
+	private Long orderId;
 
-		
-		 @Id
-		    @GeneratedValue(strategy = GenerationType.AUTO)
-		    private Long id;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
 
-		    @Column(name = "order_id")
-		    private Long orderId;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "product_id")
+	@JsonIgnore
+	private Product product;
 
-		    @ManyToOne
-		    private User user;
+	private LocalDateTime orderDate;
+	private LocalDateTime deliveryDate;
 
-		    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-		    private List<OrderItem> orderItems = new ArrayList();
+	@ManyToOne(cascade = CascadeType.ALL) // Assuming many orders can share the same address
+	@JoinColumn(name = "address_id")
+	private Address shippingAddress;
 
-		    private LocalDateTime orderDate;
-		    private LocalDateTime deliveryDate;
+	private String orderStatus;
+	private LocalDateTime createdAt;
 
-		    @OneToMany
-		    private List<Address> shippingAddresses;
+	private Integer power;
+	private Integer quantity;
 
-		    private String orderStatus;
-		    private Double totalItem;
-		    private LocalDateTime createdAt;
+	public Order() {
+	}
 
-		public Order() {
-			super();
-			// TODO Auto-generated constructor stub
-		}
+	public Order(Long id, Long orderId, User user, Product product, LocalDateTime orderDate, LocalDateTime deliveryDate, Address shippingAddress, String orderStatus, LocalDateTime createdAt, Integer power, Integer quantity) {
+		this.id = id;
+		this.orderId = orderId;
+		this.user = user;
+		this.product = product;
+		this.orderDate = orderDate;
+		this.deliveryDate = deliveryDate;
+		this.shippingAddress = shippingAddress;
+		this.orderStatus = orderStatus;
+		this.createdAt = createdAt;
+		this.power = power;
+		this.quantity = quantity;
+	}
 
-		public Order(Long id, Long orderId, User user, List<OrderItem> orderItems, LocalDateTime orderDate,
-				LocalDateTime deliveryDate, List<Address> shippingAddresses, String orderStatus, Double totalItem,
-				LocalDateTime createdAt) {
-			super();
-			this.id = id;
-			this.orderId = orderId;
-			this.user = user;
-			this.orderItems = orderItems;
-			this.orderDate = orderDate;
-			this.deliveryDate = deliveryDate;
-			this.shippingAddresses = shippingAddresses;
-			this.orderStatus = orderStatus;
-			this.totalItem = totalItem;
-			this.createdAt = createdAt;
-		}
+	public Long getId() {
+		return id;
+	}
 
-		public Long getId() {
-			return id;
-		}
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-		public void setId(Long id) {
-			this.id = id;
-		}
+	public Long getOrderId() {
+		return orderId;
+	}
 
-		public Long getOrderId() {
-			return orderId;
-		}
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
+	}
 
-		public void setOrderId(Long orderId) {
-			this.orderId = orderId;
-		}
+	public User getUser() {
+		return user;
+	}
 
-		public User getUser() {
-			return user;
-		}
+	public void setUser(User user) {
+		this.user = user;
+	}
 
-		public void setUser(User user) {
-			this.user = user;
-		}
+	public Product getProduct() {
+		return product;
+	}
 
-		public List<OrderItem> getOrderItems() {
-			return orderItems;
-		}
+	public void setProduct(Product product) {
+		this.product = product;
+	}
 
-		public void setOrderItems(List<OrderItem> orderItems) {
-			this.orderItems = orderItems;
-		}
+	public LocalDateTime getOrderDate() {
+		return orderDate;
+	}
 
-		public LocalDateTime getOrderDate() {
-			return orderDate;
-		}
+	public void setOrderDate(LocalDateTime orderDate) {
+		this.orderDate = orderDate;
+	}
 
-		public void setOrderDate(LocalDateTime orderDate) {
-			this.orderDate = orderDate;
-		}
+	public LocalDateTime getDeliveryDate() {
+		return deliveryDate;
+	}
 
-		public LocalDateTime getDeliveryDate() {
-			return deliveryDate;
-		}
+	public void setDeliveryDate(LocalDateTime deliveryDate) {
+		this.deliveryDate = deliveryDate;
+	}
 
-		public void setDeliveryDate(LocalDateTime deliveryDate) {
-			this.deliveryDate = deliveryDate;
-		}
+	public Address getShippingAddress() {
+		return shippingAddress;
+	}
 
-		public List<Address> getShippingAddresses() {
-			return shippingAddresses;
-		}
+	public void setShippingAddress(Address shippingAddress) {
+		this.shippingAddress = shippingAddress;
+	}
 
-		public void setShippingAddresses(List<Address> shippingAddresses) {
-			this.shippingAddresses = shippingAddresses;
-		}
+	public String getOrderStatus() {
+		return orderStatus;
+	}
 
-		public String getOrderStatus() {
-			return orderStatus;
-		}
+	public void setOrderStatus(String orderStatus) {
+		this.orderStatus = orderStatus;
+	}
 
-		public void setOrderStatus(String orderStatus) {
-			this.orderStatus = orderStatus;
-		}
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
 
-		public Double getTotalItem() {
-			return totalItem;
-		}
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
 
-		public void setTotalItem(Double totalItem) {
-			this.totalItem = totalItem;
-		}
+	public Integer getPower() {
+		return power;
+	}
 
-		public LocalDateTime getCreatedAt() {
-			return createdAt;
-		}
+	public void setPower(Integer power) {
+		this.power = power;
+	}
 
-		public void setCreatedAt(LocalDateTime createdAt) {
-			this.createdAt = createdAt;
-		}
+	public Integer getQuantity() {
+		return quantity;
+	}
 
-		
-	
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
 }

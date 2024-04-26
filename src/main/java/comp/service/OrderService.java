@@ -6,11 +6,13 @@ import comp.exception.OrderException;
 import comp.model.Address;
 import comp.model.Order;
 import comp.model.User;
+import comp.request.OrderRequest;
+import comp.response.OrderResponse;
 
 
 public interface OrderService {
 
-	public Order createOrder(User user,Address shippingAddress);
+	public OrderResponse createOrder(User user, OrderRequest orderRequest);
 	
 	public Order findOrderById(Long OrderId)throws OrderException;
 	
