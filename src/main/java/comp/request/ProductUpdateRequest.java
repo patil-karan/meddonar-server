@@ -1,10 +1,9 @@
 package comp.request;
 
-import comp.model.Category;
+
 import comp.model.Power;
-import comp.model.Rating;
-import comp.model.Review;
 import jakarta.persistence.*;
+
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

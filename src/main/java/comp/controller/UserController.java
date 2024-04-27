@@ -3,6 +3,7 @@ import comp.config.JwtProvider;
 import comp.model.Address;
 import comp.repository.AddressRepository;
 import comp.repository.UserRepository;
+import comp.response.AddressResponse;
 import comp.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,18 +32,25 @@ import comp.service.UserService;
 			return new ResponseEntity<User>(user,HttpStatus.ACCEPTED);
 		}
 
+		@GetMapping("/getAddress/{addressId}")
+		public ResponseEntity<Address> getUserAddress(@RequestHeader("Authorization") String jwt,@PathVariable Long addressId)throws UserException{
+			Address address = addressRepository.findById(addressId).orElseThrow();
+			return new ResponseEntity<Address>(address,HttpStatus.ACCEPTED);
+		}
+
 		@PostMapping("/addAddress")
-		public ResponseEntity<ApiResponse> addAddress(@RequestHeader("Authorization")String jwt, @RequestBody Address address) throws UserException {
+		public ResponseEntity<AddressResponse> addAddress(@RequestHeader("Authorization")String jwt, @RequestBody Address address) throws UserException {
 			String  email = jwtProvider.getEmailFromToken(jwt);
 			User user = userRepository.findByEmail(email);
 			if (user.equals(null)){
 				throw new UserException("User not Found");
 			}else {
-				addressRepository.save(address);
-				ApiResponse res = new ApiResponse();
-				res.setMessage("Address Added Successfully");
-				res.setStatus(true);
-				return new ResponseEntity<ApiResponse>(res,HttpStatus.CREATED);
+
+				Address address1 = addressRepository.save(address);
+				AddressResponse addressResponse = new AddressResponse();
+				addressResponse.setId(address1.getId());
+
+				return new ResponseEntity<AddressResponse>(addressResponse,HttpStatus.CREATED);
 			}
 
 		}
