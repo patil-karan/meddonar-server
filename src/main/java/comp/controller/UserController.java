@@ -1,7 +1,9 @@
 package comp.controller;
 import comp.config.JwtProvider;
 import comp.model.Address;
+import comp.model.DonateMedicines;
 import comp.repository.AddressRepository;
+import comp.repository.DonateMedicineRepository;
 import comp.repository.UserRepository;
 import comp.response.AddressResponse;
 import comp.response.ApiResponse;
@@ -25,6 +27,8 @@ import comp.service.UserService;
 		private JwtProvider jwtProvider;
 		@Autowired
 		private UserRepository userRepository;
+		@Autowired
+		private DonateMedicineRepository donateMedicineRepository;
 		
 		@GetMapping("/profile")
 		public ResponseEntity<User> getUserProfile(@RequestHeader("Authorization") String jwt)throws UserException{
@@ -53,5 +57,17 @@ import comp.service.UserService;
 				return new ResponseEntity<AddressResponse>(addressResponse,HttpStatus.CREATED);
 			}
 
+		}
+
+		@PostMapping("/donateMedicine")
+		public ResponseEntity<ApiResponse> donateMedicine(@RequestBody DonateMedicines donateMedicines){
+
+			donateMedicineRepository.save(donateMedicines);
+
+
+			ApiResponse res = new ApiResponse();
+			res.setMessage("Donated Successfully");
+			res.setStatus(true);
+			return new ResponseEntity<>(res,HttpStatus.CREATED);
 		}
 }

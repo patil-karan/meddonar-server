@@ -21,10 +21,13 @@ public class Order {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "product_id")
-	@JsonIgnore
 	private Product product;
+
+//	@OneToMany
+//	@JsonIgnore
+//	private List<OrderItem> orderItems = new ArrayList<>();
 
 	private LocalDateTime orderDate;
 	private LocalDateTime deliveryDate;
@@ -38,6 +41,8 @@ public class Order {
 
 	private Integer power;
 	private Integer quantity;
+
+
 
 	public Order() {
 	}

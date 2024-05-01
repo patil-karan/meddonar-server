@@ -53,13 +53,14 @@ public class Product {
 	
 	private LocalDateTime createdAt;
 
-	@OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
-	private List<Order> order = new ArrayList<>();
+//	@OneToMany(mappedBy = "product")
+//	private List<Order> order = new ArrayList<>();
 
 	public Product() {
 	}
 
-	public Product( String title, String discription, Integer quantity, String brand, Set<Power> powers, String imageUrl, List<Rating> rating, List<Review> review, Integer numRating, Category category, LocalDateTime createdAt, List<Order> order) {
+	public Product(Long id, String title, String discription, Integer quantity, String brand, Set<Power> powers, String imageUrl, List<Rating> rating, List<Review> review, Integer numRating, Category category, LocalDateTime createdAt) {
+		this.id = id;
 		this.title = title;
 		this.discription = discription;
 		this.quantity = quantity;
@@ -71,7 +72,6 @@ public class Product {
 		this.numRating = numRating;
 		this.category = category;
 		this.createdAt = createdAt;
-		this.order = order;
 	}
 
 	public Long getId() {
@@ -168,13 +168,5 @@ public class Product {
 
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
-	}
-
-	public List<Order> getOrder() {
-		return order;
-	}
-
-	public void setOrder(List<Order> order) {
-		this.order = order;
 	}
 }

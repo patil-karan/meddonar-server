@@ -1,15 +1,14 @@
 package comp.controller;
 
+import comp.model.DonateMedicines;
 import comp.model.User;
+import comp.repository.DonateMedicineRepository;
 import comp.repository.UserRepository;
 import comp.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,6 +18,8 @@ public class AdminUserController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private DonateMedicineRepository donateMedicineRepository;
 
     @PostMapping("/users")
     public ResponseEntity<User> getAllUsers(){
@@ -34,5 +35,12 @@ public class AdminUserController {
         apiResponse.setStatus(true);
 
         return  new ResponseEntity<ApiResponse>(apiResponse,HttpStatus.ACCEPTED);
+    }
+
+
+    @GetMapping("/user/donations")
+    public ResponseEntity<List<DonateMedicines>> getDonatedMedicines(){
+        List<DonateMedicines> medicines = donateMedicineRepository.findAll();
+        return new ResponseEntity<>(medicines,HttpStatus.ACCEPTED);
     }
 }
